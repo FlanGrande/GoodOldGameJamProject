@@ -1,0 +1,327 @@
+[gd_scene load_steps=22 format=2]
+
+[ext_resource path="res://Player/Player.png" type="Texture" id=1]
+[ext_resource path="res://Player/Player.gd" type="Script" id=2]
+[ext_resource path="res://Environment/platform.png" type="Texture" id=3]
+[ext_resource path="res://Environment/background.png" type="Texture" id=4]
+[ext_resource path="res://Environment/lava.png" type="Texture" id=5]
+[ext_resource path="res://Scenes/MainGame.gd" type="Script" id=6]
+
+[sub_resource type="AtlasTexture" id=15]
+atlas = ExtResource( 1 )
+region = Rect2( 64, 0, 16, 24 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 16, 24 )
+
+[sub_resource type="AtlasTexture" id=10]
+atlas = ExtResource( 1 )
+region = Rect2( 16, 0, 16, 24 )
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 1 )
+region = Rect2( 32, 0, 16, 24 )
+
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 1 )
+region = Rect2( 48, 0, 16, 24 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 1 )
+region = Rect2( 80, 0, 16, 24 )
+
+[sub_resource type="AtlasTexture" id=14]
+atlas = ExtResource( 1 )
+region = Rect2( 96, 0, 16, 24 )
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ SubResource( 15 ) ],
+"loop": false,
+"name": "brake",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 9 ), SubResource( 10 ), SubResource( 11 ), SubResource( 12 ) ],
+"loop": true,
+"name": "walk",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 13 ), SubResource( 14 ) ],
+"loop": false,
+"name": "fly",
+"speed": 5.0
+} ]
+
+[sub_resource type="Animation" id=5]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("AnimatedSprite:animation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ "fly" ]
+}
+
+[sub_resource type="Animation" id=17]
+resource_name = "brake"
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ "brake" ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("AnimatedSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=16]
+resource_name = "fall"
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ "fly" ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("AnimatedSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=8]
+resource_name = "fly"
+length = 0.5
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.25, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("AnimatedSprite:animation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ "fly" ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "walk"
+length = 2.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5, 1, 1.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("AnimatedSprite:animation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ "walk" ]
+}
+
+[sub_resource type="CapsuleShape2D" id=6]
+radius = 8.0
+height = 8.0
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 64, 32 )
+
+[node name="MainGame" type="Node2D"]
+script = ExtResource( 6 )
+
+[node name="bg" type="Sprite" parent="."]
+position = Vector2( 541, 362 )
+scale = Vector2( 9.0858, 12.76 )
+texture = ExtResource( 4 )
+
+[node name="Player" type="KinematicBody2D" parent="."]
+position = Vector2( 539, 597 )
+scale = Vector2( 3, 3 )
+script = ExtResource( 2 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="Player"]
+scale = Vector2( 0.99, 0.99 )
+frames = SubResource( 3 )
+animation = "fly"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Player"]
+anims/RESET = SubResource( 5 )
+anims/brake = SubResource( 17 )
+anims/fall = SubResource( 16 )
+anims/fly = SubResource( 8 )
+anims/walk = SubResource( 4 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource( 6 )
+
+[node name="Enemy" type="Node2D" parent="."]
+position = Vector2( 570, 523 )
+
+[node name="Level" type="Node2D" parent="."]
+position = Vector2( 540, 590 )
+
+[node name="Platforms" type="Node2D" parent="Level"]
+
+[node name="MainFloor" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( 0, 59 )
+scale = Vector2( 5.8, 0.5 )
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/MainFloor"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/MainFloor"]
+shape = SubResource( 7 )
+
+[node name="SidePlatformLeft" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( -450, -216 )
+scale = Vector2( 2.6, 0.5 )
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/SidePlatformLeft"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/SidePlatformLeft"]
+shape = SubResource( 7 )
+
+[node name="SidePlatformRight" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( 391, -249 )
+scale = Vector2( 1.4, 0.5 )
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/SidePlatformRight"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/SidePlatformRight"]
+shape = SubResource( 7 )
+
+[node name="SidePlatformRight2" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( 561, -216 )
+scale = Vector2( 1.4, 0.5 )
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/SidePlatformRight2"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/SidePlatformRight2"]
+shape = SubResource( 7 )
+
+[node name="TopPlatform" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( -32, -410 )
+scale = Vector2( 2.68, 0.5 )
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/TopPlatform"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/TopPlatform"]
+shape = SubResource( 7 )
+
+[node name="MiddlePlatform" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( 0, -135 )
+scale = Vector2( 2, 0.5 )
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/MiddlePlatform"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/MiddlePlatform"]
+shape = SubResource( 7 )
+
+[node name="TopPlatformLeft" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( -634, -450 )
+scale = Vector2( 2.68, 0.5 )
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/TopPlatformLeft"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/TopPlatformLeft"]
+shape = SubResource( 7 )
+
+[node name="TopPlatformRight" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( 634, -450 )
+scale = Vector2( 2.68, 0.5 )
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/TopPlatformRight"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/TopPlatformRight"]
+shape = SubResource( 7 )
+
+[node name="Lava" type="Node2D" parent="Level"]
+position = Vector2( 0, 128 )
+
+[node name="Sprite" type="Sprite" parent="Level/Lava"]
+position = Vector2( 0, 37 )
+texture = ExtResource( 5 )
+
+[node name="Area2D" type="Area2D" parent="Level/Lava"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Lava/Area2D"]
