@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://Player/Player.png" type="Texture" id=1]
 [ext_resource path="res://Player/Player.gd" type="Script" id=2]
@@ -79,6 +79,18 @@ tracks/1/keys = {
 "update": 0,
 "values": [ "fly" ]
 }
+tracks/2/type = "value"
+tracks/2/path = NodePath("AnimatedSprite:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 2, 0 ) ]
+}
 
 [sub_resource type="Animation" id=17]
 resource_name = "brake"
@@ -105,6 +117,46 @@ tracks/1/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=19]
+resource_name = "death"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ "fly" ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("AnimatedSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("AnimatedSprite:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ Vector2( 2, 0 ), Vector2( 0, 0 ), Vector2( -2, 0 ), Vector2( 0, 0 ), Vector2( 2, 0 ), Vector2( 0, 0 ), Vector2( -2, 0 ), Vector2( 0, 0 ), Vector2( 2, 0 ), Vector2( 0, 0 ), Vector2( -2, 0 ) ]
 }
 
 [sub_resource type="Animation" id=16]
@@ -199,6 +251,9 @@ height = 8.0
 [sub_resource type="RectangleShape2D" id=7]
 extents = Vector2( 64, 32 )
 
+[sub_resource type="RectangleShape2D" id=18]
+extents = Vector2( 592.5, 56 )
+
 [node name="MainGame" type="Node2D"]
 script = ExtResource( 6 )
 
@@ -213,6 +268,7 @@ scale = Vector2( 3, 3 )
 script = ExtResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Player"]
+position = Vector2( 2, 0 )
 scale = Vector2( 0.99, 0.99 )
 frames = SubResource( 3 )
 animation = "fly"
@@ -220,12 +276,17 @@ animation = "fly"
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Player"]
 anims/RESET = SubResource( 5 )
 anims/brake = SubResource( 17 )
+anims/death = SubResource( 19 )
 anims/fall = SubResource( 16 )
 anims/fly = SubResource( 8 )
 anims/walk = SubResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
 shape = SubResource( 6 )
+
+[node name="DeathTimer" type="Timer" parent="Player"]
+wait_time = 3.0
+one_shot = true
 
 [node name="Enemy" type="Node2D" parent="."]
 position = Vector2( 570, 523 )
@@ -325,3 +386,8 @@ texture = ExtResource( 5 )
 [node name="Area2D" type="Area2D" parent="Level/Lava"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Lava/Area2D"]
+position = Vector2( 3.5, 48 )
+shape = SubResource( 18 )
+
+[connection signal="timeout" from="Player/DeathTimer" to="Player" method="_on_DeathTimer_timeout"]
+[connection signal="body_entered" from="Level/Lava/Area2D" to="Player" method="_on_Area2D_body_entered"]
