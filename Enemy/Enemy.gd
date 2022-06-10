@@ -5,10 +5,10 @@ onready var screen_size = get_viewport_rect().size
 enum State { WALK, FLY, ATTACK, BRAKING, FALL, DEATH }
 
 const GRAVITY = 400.0
-const INITIAL_WALK_SPEED = 30
-const WALK_SPEED_INCREMENT = 10
-const MAX_SPEED = 400
-const FLY_SPEED = 100
+const INITIAL_WALK_SPEED = 40
+const WALK_SPEED_INCREMENT = 20
+const MAX_SPEED = 1000
+const FLY_SPEED = 180
 const SPRITE_WIDTH = 32
 const SPRITE_HEIGHT = 64
 const SPAWN_POSITION = Vector2(539, 597)
@@ -19,6 +19,8 @@ var current_animation = "walk"
 var animation_speed_factor = 0.24
 var animation_speed = 0
 
+
+
 func _ready():
 	current_state = State.WALK
 	velocity = Vector2(INITIAL_WALK_SPEED, 100)
@@ -28,9 +30,9 @@ func _ready():
 func _physics_process(delta):
 	process_state(delta)
 	
-	if velocity.x < 0 and current_state != State.FLY and current_state != State.FALL:
+	if velocity.x < 0:
 		$AnimatedSprite.flip_h = true
-	elif velocity.x > 0 and current_state != State.FLY and current_state != State.FALL:
+	elif velocity.x > 0:
 		$AnimatedSprite.flip_h = false
 	
 	if current_state != State.DEATH:
