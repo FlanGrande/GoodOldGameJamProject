@@ -8,7 +8,7 @@ export var bounce_fx: AudioStreamSample
 
 onready var screen_size = get_viewport_rect().size
 
-enum State { WALK, FLY, ATTACK, FALL, DEATH, WANDER, SEEK }
+enum State { WALK, FLY, ATTACK, FALL, DEATH_BY_LAVA, DEATH_BY_ATTACK, WANDER, SEEK }
 
 const GRAVITY = 2
 const INITIAL_WALK_SPEED = 0
@@ -62,7 +62,7 @@ func _physics_process(delta):
 	elif velocity.x > 0 and current_state != State.FLY and current_state != State.FALL:
 		$AnimatedSprite.flip_h = false
 	
-	if current_state != State.DEATH:
+	if current_state != State.DEATH_BY_LAVA and current_state != State.DEATH_BY_ATTACK:
 		if not is_on_floor:
 			update_state(State.FALL)
 		
@@ -115,20 +115,14 @@ func check_collisions(delta):
 			if floor(rad2deg(collision_info.get_angle())) == 0:
 				update_state(State.WALK)
 			else:
-				var pitch = rand_range(0.95, 1.05)
-				$AudioStreamPlayer.stream = bounce_fx
-				$AudioStreamPlayer.pitch_scale = pitch
-				$AudioStreamPlayer.play(0.0)
-				velocity = velocity.bounce(collision_info.normal) / 2.0
-				update_state(State.FALL)
+				bounce(collision_info)
 		
 		if collider.is_in_group("enemy"):
-			var pitch = rand_range(0.95, 1.05)
-			$AudioStreamPlayer.stream = bounce_fx
-			$AudioStreamPlayer.pitch_scale = pitch
-			$AudioStreamPlayer.play(0.0)
-			velocity = velocity.bounce(collision_info.normal) / 2.0
-			update_state(State.FALL)
+			bounce(collision_info)
+		
+		if collider.is_in_group("player"):
+			if collider.position.y < position.y:
+				update_state(State.DEATH_BY_ATTACK)
 	else:
 		if is_on_floor:
 			update_state(State.FALL)
@@ -144,6 +138,14 @@ func update_state(state):
 		
 		if current_state == State.FLY:
 			$AudioStreamPlayer.stream = fly_fx
+		
+		if current_state == State.DEATH_BY_LAVA:
+			$AnimationPlayer.play("death_by_lava", -1, 3.0)
+			$DeathTimer.start()
+		
+		if current_state == State.DEATH_BY_ATTACK:
+			$AnimationPlayer.play("death_by_attack", -1, 2.0)
+			$DeathTimer.start()
 
 func process_state(delta):
 	if current_state == State.WALK:
@@ -161,7 +163,7 @@ func process_state(delta):
 		is_on_floor = false
 		fall(delta)
 	
-	if current_state == State.DEATH:
+	if current_state == State.DEATH_BY_LAVA:
 		is_on_floor = false
 		death()
 
@@ -194,8 +196,19 @@ func fall(delta):
 	velocity.y += GRAVITY
 
 func death():
-	velocity = Vector2(0, 20)
-	move_and_slide(velocity, Vector2(0, -1))
+	if current_state == State.DEATH_BY_ATTACK:
+		velocity = Vector2()
+	if current_state == State.DEATH_BY_LAVA:
+		velocity = Vector2(0, 20)
+		move_and_slide(velocity, Vector2(0, -1))
+
+func bounce(collision_info):
+	var pitch = rand_range(0.95, 1.05)
+	$AudioStreamPlayer.stream = bounce_fx
+	$AudioStreamPlayer.pitch_scale = pitch
+	$AudioStreamPlayer.play(0.0)
+	velocity = velocity.bounce(collision_info.normal) / 2.0
+	update_state(State.FALL)
 
 func get_next_point():
 	if path.size() > 0:
@@ -206,9 +219,7 @@ func get_next_point():
 
 func _on_Area2D_body_entered(body):
 	if body.is_in_group("enemy") and name == body.name:
-		update_state(State.DEATH)
-		$AnimationPlayer.play("death", -1, 3.0)
-		$DeathTimer.start()
+		update_state(State.DEATH_BY_LAVA)
 
 func _on_DeathTimer_timeout():
 	queue_free()
