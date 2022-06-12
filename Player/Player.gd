@@ -7,6 +7,8 @@ export var bounce_fx: AudioStreamSample
 
 onready var screen_size = get_viewport_rect().size
 
+# TO DO: Kill each other
+
 enum State { WALK, FLY, ATTACK, BRAKE, FALL, DEATH }
 
 const GRAVITY = 2
@@ -185,9 +187,10 @@ func death():
 	move_and_slide(velocity, Vector2(0, -1))
 
 func _on_Area2D_body_entered(body):
-	update_state(State.DEATH)
-	$AnimationPlayer.play("death", -1, 3.0)
-	$DeathTimer.start()
+	if body.is_in_group("player"):
+		update_state(State.DEATH)
+		$AnimationPlayer.play("death", -1, 3.0)
+		$DeathTimer.start()
 
 func _on_DeathTimer_timeout():
 	update_state(State.FALL)

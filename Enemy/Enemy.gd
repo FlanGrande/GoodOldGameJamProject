@@ -1,39 +1,60 @@
 extends KinematicBody2D
 
+signal request_new_path
+
 export var walk_fx: AudioStreamSample
-export var brake_fx: AudioStreamSample
 export var fly_fx: AudioStreamSample
 export var bounce_fx: AudioStreamSample
 
 onready var screen_size = get_viewport_rect().size
 
-enum State { WALK, FLY, ATTACK, BRAKE, FALL, DEATH }
+enum State { WALK, FLY, ATTACK, FALL, DEATH, WANDER, SEEK }
 
 const GRAVITY = 2
 const INITIAL_WALK_SPEED = 0
 const WALK_SPEED_INCREMENT = 8
-const MAX_SPEED = 300
+const MAX_SPEED = 120
+const MIN_SPEED = 60
 const FLY_SPEED = 40
 const SPRITE_WIDTH = 32
 const SPRITE_HEIGHT = 64
 const SPAWN_POSITION = Vector2(539, 597)
+const MINIMUM_PATH_TIME = 1
+const MAXIMUM_PATH_TIME = 5
+const MINIMUM_FLAP_TIME = 0.3
+const MAXIMUM_FLAP_TIME = 1.2
 
-var velocity = Vector2(INITIAL_WALK_SPEED, 100) # default: right
+var velocity = Vector2(INITIAL_WALK_SPEED, 0) # default: right
 var current_state = State.FALL
-var current_animation = "walk"
+var current_animation = "fall"
 var animation_speed_factor = 0.24
 var animation_speed = 0
 var is_on_floor = false
 
 var has_sound_played = false
 
+var path = []
+var target_position = Vector2()
+var next_position_in_path = Vector2()
+var has_decided_next_movement = false
+var movement_distance = 0
+var distance_tolerance = 10
+var almost_dies = false
+
+
 func _ready():
+	randomize()
 	current_state = State.FALL
-	velocity = Vector2(INITIAL_WALK_SPEED, 100)
+	velocity = Vector2(INITIAL_WALK_SPEED, 0)
 	$AnimationPlayer.play(current_animation, -1, animation_speed)
+	$PathTimer.start(rand_range(MINIMUM_PATH_TIME, MAXIMUM_PATH_TIME))
+	$FlapTimer.start(rand_range(MINIMUM_FLAP_TIME, MAXIMUM_FLAP_TIME))
+	connect("request_new_path", get_parent(), "_on_RequestNewPath", [self])
+	emit_signal("request_new_path")
 
 # Rework to go in increments and remain the same while no input is given
 func _physics_process(delta):
+	movement_distance = MAX_SPEED
 	process_state(delta)
 	
 	if velocity.x < 0 and current_state != State.FLY and current_state != State.FALL:
@@ -45,40 +66,40 @@ func _physics_process(delta):
 		if not is_on_floor:
 			update_state(State.FALL)
 		
-		if Input.is_action_pressed("left"):
-			velocity.x -= WALK_SPEED_INCREMENT
-			if velocity.x > 0 and is_on_floor:
-				update_state(State.BRAKE)
-				$AnimationPlayer.play("brake", -1, 0.0)
+		if velocity.x < 0:
 			if current_state == State.FLY or current_state == State.FALL:
 				$AnimatedSprite.flip_h = true
-		elif Input.is_action_pressed("right"):
-			velocity.x +=  WALK_SPEED_INCREMENT
-			if velocity.x < 0 and is_on_floor:
-				update_state(State.BRAKE)
-				$AnimationPlayer.play("brake", -1, 0.0)
+		elif velocity.x > 0:
 			if current_state == State.FLY or current_state == State.FALL:
 				$AnimatedSprite.flip_h = false
 		
-		if Input.is_action_just_pressed("up"):
-			velocity.y += -FLY_SPEED
+		if velocity.y < 0:
 			update_state(State.FLY)
-			if(not $AnimationPlayer.current_animation == "fly"):
-				var pitch = rand_range(0.95, 1.05)
-				$AudioStreamPlayer.stream = fly_fx
-				$AudioStreamPlayer.pitch_scale = pitch
-				$AudioStreamPlayer.play(0.0)
-				$AnimationPlayer.play("fly", -1, 4.0)
-	
-		velocity.x = min(MAX_SPEED, velocity.x)
-		velocity.x = max(-MAX_SPEED, velocity.x)
-		velocity.y = min(MAX_SPEED, velocity.y)
-		velocity.y = max(-MAX_SPEED, velocity.y)
+		
+		if path.size() > 0:
+			var distance_to_next_point = position.distance_to(path[0])
+			if not has_decided_next_movement:
+				target_position = get_next_point()
+				# First, force maximum speed
+				velocity = (target_position - position) * MAX_SPEED
+				velocity = velocity.clamped(MAX_SPEED)
+				# Then randomize it a little bit a clamp it again
+				velocity = velocity * rand_range(0.5, 1.0)
+				velocity = velocity.clamped(MAX_SPEED)
+				has_decided_next_movement = true
+				
+			if distance_to_next_point < distance_tolerance:
+				path.remove(0)
+				has_decided_next_movement = false
+		else:
+			emit_signal("request_new_path")
+		
 		animation_speed = velocity.x * pow(animation_speed_factor, 2)
 		
 		check_collisions(delta)
 		move_and_collide(velocity * delta)
 		keep_in_boundaries()
+		
 
 func keep_in_boundaries():
 	position.x = wrapf(position.x, -SPRITE_WIDTH, screen_size.x + SPRITE_WIDTH / 2)
@@ -92,10 +113,7 @@ func check_collisions(delta):
 		
 		if collider.is_in_group("wall"):
 			if floor(rad2deg(collision_info.get_angle())) == 0:
-				if current_state == State.BRAKE and (Input.is_action_pressed("left") or Input.is_action_pressed("right")):
-					update_state(State.BRAKE)
-				else:
-					update_state(State.WALK)
+				update_state(State.WALK)
 			else:
 				var pitch = rand_range(0.95, 1.05)
 				$AudioStreamPlayer.stream = bounce_fx
@@ -103,6 +121,14 @@ func check_collisions(delta):
 				$AudioStreamPlayer.play(0.0)
 				velocity = velocity.bounce(collision_info.normal) / 2.0
 				update_state(State.FALL)
+		
+		if collider.is_in_group("enemy"):
+			var pitch = rand_range(0.95, 1.05)
+			$AudioStreamPlayer.stream = bounce_fx
+			$AudioStreamPlayer.pitch_scale = pitch
+			$AudioStreamPlayer.play(0.0)
+			velocity = velocity.bounce(collision_info.normal) / 2.0
+			update_state(State.FALL)
 	else:
 		if is_on_floor:
 			update_state(State.FALL)
@@ -113,11 +139,6 @@ func update_state(state):
 		
 		if current_state == State.WALK:
 			$AudioStreamPlayer.stream = walk_fx
-		
-		if current_state == State.BRAKE:
-			$AudioStreamPlayer.stream = brake_fx
-			$AudioStreamPlayer.pitch_scale = 1
-			$AudioStreamPlayer.play(0.0)
 		else:
 			$AudioStreamPlayer.stop()
 		
@@ -135,10 +156,6 @@ func process_state(delta):
 	
 	if current_state == State.ATTACK:
 		attack()
-	
-	if current_state == State.BRAKE:
-		is_on_floor = true
-		brake()
 	
 	if current_state == State.FALL:
 		is_on_floor = false
@@ -171,10 +188,6 @@ func fly(delta):
 func attack():
 	pass
 
-func brake():
-	if velocity.x >= WALK_SPEED_INCREMENT or velocity.x <= -WALK_SPEED_INCREMENT:
-		update_state(State.WALK)
-
 func fall(delta):
 	if $AnimationPlayer.current_animation != "fly" and velocity.y > 0:
 		$AnimationPlayer.play("fall", -1, 0)
@@ -184,12 +197,33 @@ func death():
 	velocity = Vector2(0, 20)
 	move_and_slide(velocity, Vector2(0, -1))
 
+func get_next_point():
+	if path.size() > 0:
+		var current_position = position
+		var next_point = path[0]
+		return next_point
+	return position
+
 func _on_Area2D_body_entered(body):
-	update_state(State.DEATH)
-	$AnimationPlayer.play("death", -1, 3.0)
-	$DeathTimer.start()
+	if body.is_in_group("enemy") and name == body.name:
+		update_state(State.DEATH)
+		$AnimationPlayer.play("death", -1, 3.0)
+		$DeathTimer.start()
 
 func _on_DeathTimer_timeout():
-	update_state(State.FALL)
-	position = SPAWN_POSITION
-	velocity = Vector2(INITIAL_WALK_SPEED, 100)
+	queue_free()
+
+func _on_PathTimer_timeout():
+	$PathTimer.start(rand_range(MINIMUM_PATH_TIME, MAXIMUM_PATH_TIME))
+	emit_signal("request_new_path")
+
+func _on_FlapTimer_timeout():
+	if current_state == State.FLY:
+		if(not $AnimationPlayer.current_animation == "fly"):
+			var pitch = rand_range(0.95, 1.05)
+			$AudioStreamPlayer.stream = fly_fx
+			$AudioStreamPlayer.pitch_scale = pitch
+			$AudioStreamPlayer.play(0.0)
+			$AnimationPlayer.play("fly", -1, 4.0)
+	
+	$FlapTimer.start(rand_range(MINIMUM_FLAP_TIME, MAXIMUM_FLAP_TIME))
