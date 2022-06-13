@@ -52,6 +52,7 @@ var has_decided_next_movement = false
 var movement_distance = 0
 var distance_tolerance = 20
 var almost_dies = false
+var can_wrap = false
 
 func _ready():
 	randomize()
@@ -69,7 +70,6 @@ func _ready():
 
 # Rework to go in increments and remain the same while no input is given
 func _physics_process(delta):
-	randomize()
 	movement_distance = MAX_SPEED
 	process_state(delta)
 	
@@ -132,8 +132,9 @@ func _physics_process(delta):
 					velocity *= BOUNCE_FACTOR
 
 func keep_in_boundaries():
-	position.x = wrapf(position.x, -SPRITE_WIDTH, screen_size.x + SPRITE_WIDTH / 2)
-	#position.y = max(position.y, SPRITE_HEIGHT / 2)
+	if can_wrap:
+		position.x = wrapf(position.x, -SPRITE_WIDTH, screen_size.x + SPRITE_WIDTH / 2)
+		#position.y = max(position.y, SPRITE_HEIGHT / 2)
 
 func check_collisions(delta):
 	var collision_info = move_and_collide(velocity * delta, true, true, true)
@@ -298,3 +299,6 @@ func _on_PlayerCollidedWithEnemy(collision_info):
 func _on_BounceTimer_timeout():
 	if current_state != State.DEATH_BY_LAVA and current_state != State.DEATH_BY_ATTACK:
 		update_state(State.FALL)
+
+func _on_NoWrapTimer_timeout():
+	can_wrap = true

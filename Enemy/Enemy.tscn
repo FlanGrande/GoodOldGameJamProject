@@ -1197,7 +1197,7 @@ death_by_lava_fx = ExtResource( 7 )
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 scale = Vector2( 0.99, 0.99 )
 frames = SubResource( 3 )
-animation = "walk0"
+animation = "fly0"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/RESET = SubResource( 70 )
@@ -1219,11 +1219,11 @@ next/death_by_attack = "RESET"
 
 [node name="GroundCollision" type="CollisionShape2D" parent="."]
 shape = SubResource( 6 )
+disabled = true
 
 [node name="AirCollision" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -4 )
 shape = SubResource( 89 )
-disabled = true
 
 [node name="DeathTimer" type="Timer" parent="."]
 wait_time = 3.0
@@ -1232,10 +1232,17 @@ one_shot = true
 [node name="PathTimer" type="Timer" parent="."]
 
 [node name="FlapTimer" type="Timer" parent="."]
+one_shot = true
+autostart = true
 
 [node name="BounceTimer" type="Timer" parent="."]
 wait_time = 0.75
 one_shot = true
+
+[node name="NoWrapTimer" type="Timer" parent="."]
+wait_time = 8.0
+one_shot = true
+autostart = true
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 
@@ -1246,3 +1253,4 @@ position = Vector2( 0, -7 )
 [connection signal="timeout" from="PathTimer" to="." method="_on_PathTimer_timeout"]
 [connection signal="timeout" from="FlapTimer" to="." method="_on_FlapTimer_timeout"]
 [connection signal="timeout" from="BounceTimer" to="." method="_on_BounceTimer_timeout"]
+[connection signal="timeout" from="NoWrapTimer" to="." method="_on_NoWrapTimer_timeout"]
