@@ -7,6 +7,8 @@ signal enemy_collided_with_player
 export var walk_fx: AudioStreamSample
 export var fly_fx: AudioStreamSample
 export var bounce_fx: AudioStreamSample
+export var death_by_attack_fx: AudioStreamSample
+export var death_by_lava_fx: AudioStreamSample
 
 export var moves = true
 
@@ -67,6 +69,7 @@ func _ready():
 
 # Rework to go in increments and remain the same while no input is given
 func _physics_process(delta):
+	randomize()
 	movement_distance = MAX_SPEED
 	process_state(delta)
 	
@@ -130,7 +133,7 @@ func _physics_process(delta):
 
 func keep_in_boundaries():
 	position.x = wrapf(position.x, -SPRITE_WIDTH, screen_size.x + SPRITE_WIDTH / 2)
-	position.y = max(position.y, SPRITE_HEIGHT / 2)
+	#position.y = max(position.y, SPRITE_HEIGHT / 2)
 
 func check_collisions(delta):
 	var collision_info = move_and_collide(velocity * delta, true, true, true)
@@ -163,10 +166,18 @@ func update_state(state):
 			$AudioStreamPlayer.stream = fly_fx
 		
 		if current_state == State.DEATH_BY_LAVA:
+			var pitch = rand_range(0.80, 1.20)
+			$AudioStreamPlayer.pitch_scale = pitch
+			$AudioStreamPlayer.stream = death_by_lava_fx
+			$AudioStreamPlayer.play(0.0)
 			$AnimationPlayer.play("death_by_lava" + str(enemy_type), -1, 3.0)
 			$DeathTimer.start()
 		
 		if current_state == State.DEATH_BY_ATTACK:
+			var pitch = rand_range(0.5, 1.20)
+			$AudioStreamPlayer.pitch_scale = pitch
+			$AudioStreamPlayer.stream = death_by_attack_fx
+			$AudioStreamPlayer.play(0.0)
 			$AnimationPlayer.play("death_by_attack", -1, 2.0)
 			$DeathTimer.start()
 		
@@ -194,7 +205,6 @@ func process_state(delta):
 		death()
 	
 	if current_state == State.BOUNCE:
-		print("im bouncing")
 		is_on_floor = false
 		$AnimationPlayer.play("fall" + str(enemy_type), -1, 0)
 		velocity.y += GRAVITY
@@ -208,7 +218,7 @@ func walk():
 		$AnimationPlayer.play("walk" + str(enemy_type), -1, animation_speed)
 	
 	if not has_sound_played and ($AnimatedSprite.frame == 3 or $AnimatedSprite.frame == 7 or $AnimatedSprite.frame == 11):
-		var pitch = rand_range(0.98, 1.02)
+		var pitch = rand_range(0.90, 1.06)
 		$AudioStreamPlayer.pitch_scale = pitch
 		$AudioStreamPlayer.play(0.0)
 		has_sound_played = true
@@ -238,7 +248,7 @@ func bounce(collision_normal):
 	var pitch = rand_range(0.95, 1.05)
 	$AudioStreamPlayer.stream = bounce_fx
 	$AudioStreamPlayer.pitch_scale = pitch
-	$AudioStreamPlayer.play(0.0)
+	#$AudioStreamPlayer.play(0.0)
 	velocity = velocity.bounce(collision_normal) / 2.0
 	
 	if current_state != State.DEATH_BY_LAVA and current_state != State.DEATH_BY_ATTACK and current_state != State.BOUNCE:
@@ -283,6 +293,7 @@ func _on_PlayerCollidedWithEnemy(collision_info):
 		else:
 			update_state(State.BOUNCE)
 			bounce(collision_info.normal)
+			velocity *= BOUNCE_FACTOR
 
 func _on_BounceTimer_timeout():
 	if current_state != State.DEATH_BY_LAVA and current_state != State.DEATH_BY_ATTACK:

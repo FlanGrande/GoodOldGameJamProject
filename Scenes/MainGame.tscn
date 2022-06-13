@@ -1,24 +1,32 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=20 format=2]
 
+[ext_resource path="res://Environment/PlatformLeft.png" type="Texture" id=1]
 [ext_resource path="res://Player/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Environment/platform.png" type="Texture" id=3]
 [ext_resource path="res://Environment/background.png" type="Texture" id=4]
 [ext_resource path="res://Environment/lava.png" type="Texture" id=5]
 [ext_resource path="res://Scenes/MainGame.gd" type="Script" id=6]
 [ext_resource path="res://Environment/Lava.gd" type="Script" id=7]
+[ext_resource path="res://Environment/PlatformRight.png" type="Texture" id=8]
 [ext_resource path="res://Enemy/Enemy.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Environment/PlatformRightSmall.png" type="Texture" id=10]
+[ext_resource path="res://Environment/PlatformTop.png" type="Texture" id=11]
 [ext_resource path="res://Scenes/NavigationMap.gd" type="Script" id=12]
+[ext_resource path="res://Environment/PlatformCenter.png" type="Texture" id=13]
+[ext_resource path="res://Environment/PlatformTopLeft.png" type="Texture" id=14]
+[ext_resource path="res://Environment/PlatformTopRight.png" type="Texture" id=15]
+[ext_resource path="res://Environment/MainPlatform.png" type="Texture" id=16]
 
 [sub_resource type="NavigationPolygon" id=37]
-vertices = PoolVector2Array( 721, 455, 1029, 435, 1124, 456, 1129, 614, 719, 485, 927, 411, 976, 410, 868, 416, 826, 401, 795, 369, 690, 440, 748, 177, 953, 140, 958, 170, 866, 325, 834, 322, 740, 212, 1123, 29, 1132, 140, 1032, 139, 1006, 126, 33, 145, -56, 141, -41, 18, 89, 122, 205, 363, -41, 372, -41, 198, 82, 198, 109, 189, 1015, 202, 1153, 196, 1155, 377, 1042, 376, 975, 331, 977, 197, 174, 599, 115, 625, 71, 642, 24, 648, -36, 625, -27, 450, 83, 446, 251, 444, 394, 511, 211, 609, 280, 436, 373, 484, 115, 127, 132, 146, 798, 335, 700, 235, 129, 169, 306, 160, 338, 230, 260, 363, 298, 208, 693, 513, 961, 599, 837, 644, 234, 647, 614, 524, 862, 618, 1024.79, 644.35, 898, 594, 491, 524, 431, 521, 378, 455, 302, 408, 392, 234, 400, 438, 292, 376, 638, 231, 636, 443, 449, 445, 464, 225, 566, 224, 289, 179, 350, 158, 385, 180, 977, 123, 691, 164, 718, 164, 656, 178 )
-polygons = [ PoolIntArray( 0, 1, 2, 3, 4 ), PoolIntArray( 5, 6, 1, 0, 7 ), PoolIntArray( 8, 7, 0 ), PoolIntArray( 9, 8, 0, 10 ), PoolIntArray( 11, 12, 13, 14, 15, 16 ), PoolIntArray( 17, 18, 19, 20 ), PoolIntArray( 21, 22, 23, 24 ), PoolIntArray( 25, 26, 27, 28 ), PoolIntArray( 25, 28, 29 ), PoolIntArray( 30, 31, 32, 33, 34 ), PoolIntArray( 35, 30, 34, 14 ), PoolIntArray( 36, 37, 38, 39, 40, 41, 42, 43 ), PoolIntArray( 44, 45, 36, 43, 46, 47 ), PoolIntArray( 24, 23, 17, 48 ), PoolIntArray( 49, 48, 17 ), PoolIntArray( 13, 35, 14 ), PoolIntArray( 16, 15, 50, 51 ), PoolIntArray( 52, 49, 17, 53 ), PoolIntArray( 54, 55, 25, 29, 52, 56 ), PoolIntArray( 57, 4, 3, 58 ), PoolIntArray( 59, 60, 45, 61, 57, 62 ), PoolIntArray( 3, 63, 58 ), PoolIntArray( 57, 58, 64 ), PoolIntArray( 57, 64, 62 ), PoolIntArray( 65, 61, 45 ), PoolIntArray( 66, 65, 45 ), PoolIntArray( 44, 66, 45 ), PoolIntArray( 67, 47, 46, 68 ), PoolIntArray( 69, 70, 67, 68, 71, 54 ), PoolIntArray( 72, 51, 50, 9, 10, 73, 74 ), PoolIntArray( 69, 75, 76, 72, 74, 70 ), PoolIntArray( 54, 71, 55 ), PoolIntArray( 77, 56, 52 ), PoolIntArray( 53, 77, 52 ), PoolIntArray( 78, 53, 17 ), PoolIntArray( 79, 78, 17, 80 ), PoolIntArray( 17, 20, 80 ), PoolIntArray( 79, 80, 12, 81 ), PoolIntArray( 12, 11, 82 ), PoolIntArray( 81, 83, 79 ), PoolIntArray( 81, 12, 82 ) ]
-outlines = [ PoolVector2Array( 1153, 196, 1155, 377, 1042, 376, 975, 331, 866, 325, 834, 322, 798, 335, 795, 369, 826, 401, 868, 416, 927, 411, 976, 410, 1029, 435, 1124, 456, 1129, 614, 1024.79, 644.35, 961, 599, 898, 594, 862, 618, 837, 644, 234, 647, 211, 609, 174, 599, 115, 625, 71, 642, 24, 648, -36, 625, -27, 450, 83, 446, 251, 444, 280, 436, 302, 408, 292, 376, 260, 363, 205, 363, -41, 372, -41, 198, 82, 198, 109, 189, 129, 169, 132, 146, 115, 127, 89, 122, 33, 145, -56, 141, -41, 18, 1123, 29, 1132, 140, 1032, 139, 1006, 126, 977, 123, 953, 140, 958, 170, 977, 197, 1015, 202 ), PoolVector2Array( 289, 179, 306, 160, 350, 158, 385, 180, 656, 178, 691, 164, 718, 164, 748, 177, 740, 212, 700, 235, 638, 231, 566, 224, 464, 225, 392, 234, 338, 230, 298, 208 ), PoolVector2Array( 449, 445, 636, 443, 690, 440, 721, 455, 719, 485, 693, 513, 614, 524, 491, 524, 431, 521, 394, 511, 373, 484, 378, 455, 400, 438 ) ]
-
-[sub_resource type="RectangleShape2D" id=7]
-extents = Vector2( 64, 32 )
+vertices = PoolVector2Array( 719, 464, 1049, 424, 1138, 441, 1136, 667, 1060, 690, 989, 644, 968, 404, 921, 393, 835, 380, 879, 383, 799, 385, 748, 177, 943, 155, 969, 179, 981, 325, 845, 320, 784, 303, 740, 212, 764, 385, 715, 439, 859, 95, 898, 109, 929, 126, 729, 153, 227, 360, -70, 367, -66, 201, 82, 198, 139, 185, 281, 336, 1038, 193, 1153, 196, 1156, 367, 1046, 367, 742, 306, 700, 235, 739, 363, 697, 428, 252, 92, 687, 150, 659, 172, 385, 168, 333, 147, 291, 149, 220, 107, 171, 158, 275, 174, 289, 207, 93, 644, 60, 667, 11, 688, -63, 676, -59, 443, 52, 427, 181, 420, 140, 632, 193, 647, 270, 419, 194, 131, 338, 230, 305, 340, 392, 234, 317, 364, 244, 695, 303, 413, 360, 451, 359, 479, 729, 329, 638, 231, 863, 648, 840, 686, 396, 499, 447, 505, 509, 513, 464, 225, 566, 224, 406, 434, 380, 434, 314, 394, 668, 436, 645, 458, 425, 458, 597, 512, 666, 499, 704, 489, 904, 632, 954, 631, 1022, 676 )
+polygons = [ PoolIntArray( 0, 1, 2, 3, 4, 5 ), PoolIntArray( 6, 1, 0, 7 ), PoolIntArray( 8, 9, 7, 0, 10 ), PoolIntArray( 11, 12, 13, 14, 15, 16, 17 ), PoolIntArray( 18, 10, 0, 19 ), PoolIntArray( 20, 21, 22, 12, 11, 23 ), PoolIntArray( 24, 25, 26, 27 ), PoolIntArray( 24, 27, 28, 29 ), PoolIntArray( 30, 31, 32, 33, 14 ), PoolIntArray( 13, 30, 14 ), PoolIntArray( 17, 16, 34, 35 ), PoolIntArray( 36, 18, 19, 37 ), PoolIntArray( 38, 20, 23, 39 ), PoolIntArray( 38, 39, 40, 41, 42 ), PoolIntArray( 38, 42, 43, 44 ), PoolIntArray( 29, 28, 45, 46, 47 ), PoolIntArray( 48, 49, 50, 51, 52, 53, 54 ), PoolIntArray( 55, 48, 54 ), PoolIntArray( 56, 55, 54, 57 ), PoolIntArray( 58, 44, 43, 46, 45 ), PoolIntArray( 29, 47, 59, 60 ), PoolIntArray( 60, 59, 61, 62 ), PoolIntArray( 63, 56, 57, 64, 65, 66 ), PoolIntArray( 35, 34, 67, 68 ), PoolIntArray( 69, 70, 63, 71, 72, 73 ), PoolIntArray( 62, 61, 74, 75, 68, 76, 77, 78 ), PoolIntArray( 79, 80, 81, 76, 68 ), PoolIntArray( 68, 67, 36, 37, 79 ), PoolIntArray( 78, 77, 65, 64 ), PoolIntArray( 63, 66, 71 ), PoolIntArray( 69, 73, 82 ), PoolIntArray( 69, 82, 83 ), PoolIntArray( 69, 83, 84 ), PoolIntArray( 69, 84, 0, 85 ), PoolIntArray( 86, 85, 0 ), PoolIntArray( 4, 87, 5 ), PoolIntArray( 86, 0, 5 ) ]
+outlines = [ PoolVector2Array( 1153, 196, 1156, 367, 1046, 367, 981, 325, 845, 320, 784, 303, 742, 306, 729, 329, 739, 363, 764, 385, 799, 385, 835, 380, 879, 383, 921, 393, 968, 404, 1049, 424, 1138, 441, 1136, 667, 1060, 690, 1022, 676, 989, 644, 954, 631, 904, 632, 863, 648, 840, 686, 244, 695, 193, 647, 140, 632, 93, 644, 60, 667, 11, 688, -63, 676, -59, 443, 52, 427, 181, 420, 270, 419, 303, 413, 314, 394, 317, 364, 305, 340, 281, 336, 227, 360, -70, 367, -66, 201, 82, 198, 139, 185, 171, 158, 194, 131, 220, 107, 252, 92, 859, 95, 898, 109, 929, 126, 943, 155, 969, 179, 1038, 193 ), PoolVector2Array( 275, 174, 291, 149, 333, 147, 385, 168, 659, 172, 687, 150, 729, 153, 748, 177, 740, 212, 700, 235, 638, 231, 566, 224, 464, 225, 392, 234, 338, 230, 289, 207 ), PoolVector2Array( 425, 458, 645, 458, 668, 436, 697, 428, 715, 439, 719, 464, 704, 489, 666, 499, 597, 512, 509, 513, 447, 505, 396, 499, 359, 479, 360, 451, 380, 434, 406, 434 ) ]
 
 [sub_resource type="RectangleShape2D" id=18]
-extents = Vector2( 592.5, 56 )
+extents = Vector2( 700, 56 )
+
+[sub_resource type="RectangleShape2D" id=39]
+extents = Vector2( 64, 32 )
 
 [node name="MainGame" type="Node2D"]
 script = ExtResource( 6 )
@@ -28,8 +36,11 @@ position = Vector2( 541, 363 )
 scale = Vector2( 9.0858, 12.76 )
 texture = ExtResource( 4 )
 
+[node name="PlayerSpawn" type="Node2D" parent="."]
+position = Vector2( 544, 539 )
+
 [node name="Player" parent="." groups=["player"] instance=ExtResource( 2 )]
-position = Vector2( 536, 596 )
+position = Vector2( 544, 539 )
 
 [node name="NavigationMap" type="Navigation2D" parent="."]
 script = ExtResource( 12 )
@@ -38,6 +49,7 @@ maximum_spawn_time = 8
 enemy_scene = ExtResource( 9 )
 
 [node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="NavigationMap"]
+position = Vector2( 0, -83 )
 navpoly = SubResource( 37 )
 
 [node name="SpawnTimer" type="Timer" parent="NavigationMap"]
@@ -57,118 +69,8 @@ position = Vector2( 1102, 535 )
 [node name="Level" type="Node2D" parent="."]
 position = Vector2( 540, 590 )
 
-[node name="Platforms" type="Node2D" parent="Level"]
-
-[node name="MainFloor" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
-position = Vector2( 0, 59 )
-scale = Vector2( 5.8, 0.5 )
-collision_layer = 3
-collision_mask = 3
-
-[node name="Sprite" type="Sprite" parent="Level/Platforms/MainFloor"]
-texture = ExtResource( 3 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/MainFloor"]
-shape = SubResource( 7 )
-
-[node name="MainCeiling" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
-position = Vector2( -19, -610 )
-scale = Vector2( 12.5868, 0.5 )
-collision_layer = 3
-collision_mask = 3
-
-[node name="Sprite" type="Sprite" parent="Level/Platforms/MainCeiling"]
-texture = ExtResource( 3 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/MainCeiling"]
-shape = SubResource( 7 )
-
-[node name="SidePlatformLeft" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
-position = Vector2( -450, -216 )
-scale = Vector2( 2.6, 0.5 )
-collision_layer = 3
-collision_mask = 3
-
-[node name="Sprite" type="Sprite" parent="Level/Platforms/SidePlatformLeft"]
-texture = ExtResource( 3 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/SidePlatformLeft"]
-shape = SubResource( 7 )
-
-[node name="SidePlatformRight" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
-position = Vector2( 391, -249 )
-scale = Vector2( 1.4, 0.5 )
-collision_layer = 3
-collision_mask = 3
-
-[node name="Sprite" type="Sprite" parent="Level/Platforms/SidePlatformRight"]
-texture = ExtResource( 3 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/SidePlatformRight"]
-shape = SubResource( 7 )
-
-[node name="SidePlatformRight2" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
-position = Vector2( 561, -216 )
-scale = Vector2( 1.4, 0.5 )
-collision_layer = 3
-collision_mask = 3
-
-[node name="Sprite" type="Sprite" parent="Level/Platforms/SidePlatformRight2"]
-texture = ExtResource( 3 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/SidePlatformRight2"]
-shape = SubResource( 7 )
-
-[node name="TopPlatform" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
-position = Vector2( -32, -410 )
-scale = Vector2( 2.68, 0.5 )
-collision_layer = 3
-collision_mask = 3
-
-[node name="Sprite" type="Sprite" parent="Level/Platforms/TopPlatform"]
-texture = ExtResource( 3 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/TopPlatform"]
-shape = SubResource( 7 )
-
-[node name="MiddlePlatform" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
-position = Vector2( 0, -135 )
-scale = Vector2( 2, 0.5 )
-collision_layer = 3
-collision_mask = 3
-
-[node name="Sprite" type="Sprite" parent="Level/Platforms/MiddlePlatform"]
-texture = ExtResource( 3 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/MiddlePlatform"]
-shape = SubResource( 7 )
-
-[node name="TopPlatformLeft" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
-position = Vector2( -634, -450 )
-scale = Vector2( 2.68, 0.5 )
-collision_layer = 3
-collision_mask = 3
-
-[node name="Sprite" type="Sprite" parent="Level/Platforms/TopPlatformLeft"]
-texture = ExtResource( 3 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/TopPlatformLeft"]
-shape = SubResource( 7 )
-
-[node name="TopPlatformRight" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
-position = Vector2( 634, -450 )
-scale = Vector2( 2.68, 0.5 )
-collision_layer = 3
-collision_mask = 3
-
-[node name="Sprite" type="Sprite" parent="Level/Platforms/TopPlatformRight"]
-texture = ExtResource( 3 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/TopPlatformRight"]
-shape = SubResource( 7 )
-
 [node name="Lava" type="Node2D" parent="Level"]
-position = Vector2( 0, 128 )
+position = Vector2( 0, 116 )
 
 [node name="Sprite" type="Sprite" parent="Level/Lava"]
 position = Vector2( 0, 37 )
@@ -180,8 +82,110 @@ collision_mask = 3
 script = ExtResource( 7 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Lava/Area2D"]
-position = Vector2( 3.5, 48 )
+position = Vector2( 15, 48 )
 shape = SubResource( 18 )
+
+[node name="Platforms" type="Node2D" parent="Level"]
+
+[node name="MainFloor" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( 0, 60 )
+collision_layer = 3
+collision_mask = 3
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/MainFloor"]
+texture = ExtResource( 16 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Platforms/MainFloor"]
+polygon = PoolVector2Array( -412, -72, 412, -72, 412, -64, 403, -50, 337, -7, 337, 18, 376, 55, -394, 54, -357, 19, -341, -5, -379, -30, -406, -51, -411, -61 )
+
+[node name="MainCeiling" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( -10, -665 )
+scale = Vector2( 12.5868, 0.5 )
+collision_layer = 3
+collision_mask = 3
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/MainCeiling"]
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level/Platforms/MainCeiling"]
+shape = SubResource( 39 )
+
+[node name="SidePlatformLeft" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( -405, -302 )
+collision_layer = 3
+collision_mask = 3
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/SidePlatformLeft"]
+texture = ExtResource( 1 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Platforms/SidePlatformLeft"]
+polygon = PoolVector2Array( -185, -18, 139, -18, 139, -9, 113, 18, 38, 19, -140, 5.99999, -185, 1 )
+
+[node name="SidePlatformRight" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( 359, -338 )
+collision_layer = 3
+collision_mask = 3
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/SidePlatformRight"]
+texture = ExtResource( 8 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Platforms/SidePlatformRight"]
+polygon = PoolVector2Array( -128, -24, 127, -24, 127, 0, 75, 26, -115, 2 )
+
+[node name="SidePlatformRight2" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( 504, -302 )
+collision_layer = 3
+collision_mask = 3
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/SidePlatformRight2"]
+texture = ExtResource( 10 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Platforms/SidePlatformRight2"]
+polygon = PoolVector2Array( -35, -15, 111, -15, 110, 16, -13, 16 )
+
+[node name="TopPlatform" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( -33, -496 )
+collision_layer = 3
+collision_mask = 3
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/TopPlatform"]
+texture = ExtResource( 11 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Platforms/TopPlatform"]
+polygon = PoolVector2Array( -194, -20, 195, -19, 195, -11, 171, 11, 11, 20, -87, 20, -168, 11, -194, -10 )
+
+[node name="MiddlePlatform" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( -9, -203 )
+collision_layer = 3
+collision_mask = 3
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/MiddlePlatform"]
+texture = ExtResource( 13 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Platforms/MiddlePlatform"]
+polygon = PoolVector2Array( -141, -18, 140, -18, 140, -6, 106, 7, 34, 17, -77, 13, -118, 4, -140, -10 )
+
+[node name="TopPlatformLeft" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( -469, -536 )
+collision_layer = 3
+collision_mask = 3
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/TopPlatformLeft"]
+texture = ExtResource( 14 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Platforms/TopPlatformLeft"]
+polygon = PoolVector2Array( 73, -15, 73, -7, 28, 15, -3, 15, -73, 12, -109, 8, -108, -15 )
+
+[node name="TopPlatformRight" type="StaticBody2D" parent="Level/Platforms" groups=["wall"]]
+position = Vector2( 496, -536 )
+collision_layer = 3
+collision_mask = 3
+
+[node name="Sprite" type="Sprite" parent="Level/Platforms/TopPlatformRight"]
+texture = ExtResource( 15 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Platforms/TopPlatformRight"]
+polygon = PoolVector2Array( -43, -13, 85, -13, 85, 13, -8, 13, -43, -5 )
 
 [node name="Node2D" type="Node2D" parent="."]
 position = Vector2( 36, 645 )

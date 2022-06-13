@@ -9,7 +9,7 @@ export var maximum_spawn_time = 20
 export(PackedScene) var enemy_scene
 
 const NAV_OFFSET_X = 8000
-const NAV_OFFSET_Y = 80
+const NAV_OFFSET_Y = 120
 
 var enemies = []
 var max_enemies = 5
@@ -66,8 +66,6 @@ func spawn_enemy():
 	add_child(new_enemy)
 
 func _on_SpawnTimer_timeout():
-	emit_signal("spawn_enemy")
-	
 	for child in get_children():
 		if child.is_in_group("enemy"):
 			if not child in enemies:
@@ -75,6 +73,7 @@ func _on_SpawnTimer_timeout():
 	
 	if enemies.size() < max_enemies:
 		spawn_enemy()
+		emit_signal("spawn_enemy")
 		$SpawnTimer.start(rand_range(minimum_spawn_time, minimum_spawn_time))
 
 func _on_RequestNewPath(enemy_that_made_the_request: KinematicBody2D):
