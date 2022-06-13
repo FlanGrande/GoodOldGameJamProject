@@ -1,6 +1,7 @@
 extends KinematicBody2D
 
 signal enemy_kill
+signal player_collided_with_enemy
 
 export var walk_fx: AudioStreamSample
 export var brake_fx: AudioStreamSample
@@ -16,17 +17,20 @@ enum State { WALK, FLY, ATTACK, BRAKE, FALL, DEATH_BY_LAVA, DEATH_BY_ATTACK }
 const GRAVITY = 2
 const INITIAL_WALK_SPEED = 0
 const WALK_SPEED_INCREMENT = 8
-const MAX_SPEED = 300
-const FLY_SPEED = 40
+const MAX_SPEED = 450
+const FLY_SPEED = 60
 const SPRITE_WIDTH = 32
 const SPRITE_HEIGHT = 64
 const SPAWN_POSITION = Vector2(539, 597)
+const KILLING_TOLERANCE = 0.1
+const BOUNCE_FACTOR = 1.3
 
-var velocity = Vector2(INITIAL_WALK_SPEED, 100) # default: right
 var current_state = State.FALL
 var current_animation = "walk"
 var animation_speed_factor = 0.24
 var animation_speed = 0
+
+var velocity = Vector2(INITIAL_WALK_SPEED, 100) # default: right
 var is_on_floor = false
 
 var has_sound_played = false
@@ -38,6 +42,7 @@ func _ready():
 
 # Rework to go in increments and remain the same while no input is given
 func _physics_process(delta):
+	connect_with_enemies()
 	process_state(delta)
 	
 	if velocity.x < 0 and current_state != State.FLY and current_state != State.FALL:
@@ -78,18 +83,30 @@ func _physics_process(delta):
 		velocity.x = max(-MAX_SPEED, velocity.x)
 		velocity.y = min(MAX_SPEED, velocity.y)
 		velocity.y = max(-MAX_SPEED, velocity.y)
+		#velocity = velocity.clamped(MAX_SPEED)
 		animation_speed = velocity.x * pow(animation_speed_factor, 2)
 		
 		check_collisions(delta)
-		move_and_collide(velocity * delta)
+		var collision_info = move_and_collide(velocity * delta)
 		keep_in_boundaries()
+		
+		if collision_info:
+			var collider = collision_info.get_collider()
+			
+			if collider.is_in_group("enemy"):
+				emit_signal("player_collided_with_enemy", collision_info)
+				if collision_info.normal.y > KILLING_TOLERANCE: # if player is higher (normal.y > KILLING_TOLERANCE)
+					update_state(State.DEATH_BY_ATTACK) # self dies
+				else:
+					bounce(collision_info.normal)
+					#velocity *= BOUNCE_FACTOR
 
 func keep_in_boundaries():
 	position.x = wrapf(position.x, -SPRITE_WIDTH, screen_size.x + SPRITE_WIDTH / 2)
-	position.y = max(position.y, SPRITE_WIDTH / 2)
+	position.y = max(position.y, SPRITE_HEIGHT / 2)
 
 func check_collisions(delta):
-	var collision_info = move_and_collide(velocity * delta, true, true)
+	var collision_info = move_and_collide(velocity * delta, true, true, true)
 	
 	if collision_info:
 		var collider = collision_info.get_collider()
@@ -101,11 +118,7 @@ func check_collisions(delta):
 				else:
 					update_state(State.WALK)
 			else:
-				bounce(collision_info)
-		
-		if collider.is_in_group("enemy"):
-			if collider.position.y < position.y:
-				update_state(State.DEATH_BY_ATTACK)
+				bounce(collision_info.normal)
 	else:
 		if is_on_floor:
 			update_state(State.FALL)
@@ -202,13 +215,20 @@ func death():
 		velocity = Vector2(0, 20)
 		move_and_slide(velocity, Vector2(0, -1))
 
-func bounce(collision_info):
+func bounce(collision_normal):
 	var pitch = rand_range(0.95, 1.05)
 	$AudioStreamPlayer.stream = bounce_fx
 	$AudioStreamPlayer.pitch_scale = pitch
 	$AudioStreamPlayer.play(0.0)
-	velocity = velocity.bounce(collision_info.normal) / 2.0
-	update_state(State.FALL)
+	velocity = velocity.bounce(collision_normal) / 2.0
+	
+	if current_state != State.DEATH_BY_LAVA and current_state != State.DEATH_BY_ATTACK:
+		update_state(State.FALL)
+
+func connect_with_enemies():
+	for enemy in get_parent().get_node("NavigationMap").enemies:
+		if not is_connected("player_collided_with_enemy", enemy, "_on_PlayerCollidedWithEnemy"):
+			connect("player_collided_with_enemy", enemy, "_on_PlayerCollidedWithEnemy")
 
 func _on_Area2D_body_entered(body):
 	if body.is_in_group("player"):
@@ -218,3 +238,9 @@ func _on_DeathTimer_timeout():
 	position = SPAWN_POSITION
 	velocity = Vector2(INITIAL_WALK_SPEED, 100)
 	update_state(State.FALL)
+
+func _on_EnemyCollidedWithPlayer(collision_info):
+	if collision_info.normal.y < -KILLING_TOLERANCE:
+		update_state(State.DEATH_BY_ATTACK)
+	else:
+		bounce(collision_info.normal)

@@ -9,7 +9,7 @@ export var maximum_spawn_time = 20
 export(PackedScene) var enemy_scene
 
 const NAV_OFFSET_X = 8000
-const NAV_OFFSET_Y = 200
+const NAV_OFFSET_Y = 80
 
 var enemies = []
 var max_enemies = 5
@@ -24,6 +24,8 @@ func _ready():
 	#spawn_enemy()
 	#spawn_enemy()
 
+func _process(delta):
+	pass
 
 #func _update_navigation_path(start_position, end_position):
 #	for enemy in enemies:
@@ -58,23 +60,31 @@ func _ready():
 #		_update_navigation_path(enemy.position, target_position)
 
 func spawn_enemy():
-	var new_enemy = enemy_scene.instance()
+	var new_enemy = enemy_scene.instance().duplicate()
 	var spawn_point = get_node("Spawn" + str(randi()%4+1))
 	new_enemy.position = spawn_point.position
 	add_child(new_enemy)
 
 func _on_SpawnTimer_timeout():
+	emit_signal("spawn_enemy")
+	
 	for child in get_children():
 		if child.is_in_group("enemy"):
-			enemies.append(child)
+			if not child in enemies:
+				enemies.append(child)
 	
 	if enemies.size() < max_enemies:
-		emit_signal("spawn_enemy")
 		spawn_enemy()
 		$SpawnTimer.start(rand_range(minimum_spawn_time, minimum_spawn_time))
-	
-	enemies.clear()
 
 func _on_RequestNewPath(enemy_that_made_the_request: KinematicBody2D):
 	target_position = Vector2(rand_range(-NAV_OFFSET_X, screen_size.x + NAV_OFFSET_X), rand_range(0, screen_size.y - NAV_OFFSET_Y))
 	enemy_that_made_the_request.path = get_simple_path(enemy_that_made_the_request.position, target_position, true)
+
+func _on_EnemyDied(enemy_that_died: KinematicBody2D):
+	var index = enemies.find(enemy_that_died)
+	if(index != -1):
+		enemies[index].queue_free()
+		enemies.remove(index)
+	else:
+		print("enemy not found when it died")
